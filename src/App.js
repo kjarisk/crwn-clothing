@@ -29,12 +29,9 @@ class App extends React.Component {
             ...userRef.data(),
           },
         });
-
-        
       } else {
         this.setState({ currentUser: userAuth });
       }
-      console.log(this.state);
     });
    
   }
