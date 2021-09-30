@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, setDoc,collection, getDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc,collection, getDoc, writeBatch } from "firebase/firestore";
 import {
   getAuth,
   signInWithPopup,
@@ -37,6 +37,22 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   }
   return docSnap;
 };
+
+// Create new collections in firestore
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  const collectionRef = collection(db, collectionKey);
+
+  // New write batch
+  const batch = writeBatch(db);
+  objectsToAdd.forEach(obj => {
+    const newDocRef = doc(collectionRef);
+    batch.set(newDocRef, obj);
+  });
+
+  return await batch.commit();
+
+  // batch end;
+}
 
 export const auth = getAuth();
 const provider = new GoogleAuthProvider();
