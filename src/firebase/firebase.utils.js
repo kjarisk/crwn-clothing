@@ -17,7 +17,7 @@ const config = {
 };
 
 const app = initializeApp(config);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
@@ -37,6 +37,25 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   }
   return docSnap;
 };
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const transformedCollection = collections.docs.map(doc => {
+    const { title, items } = doc.data();
+
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items,
+    }
+  });
+
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+
+}
 
 // Create new collections in firestore
 export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
